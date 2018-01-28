@@ -4,18 +4,25 @@ Python Tesseract
 Python-tesseract is an optical character recognition (OCR) tool for python.
 That is, it will recognize and "read" the text embedded in images.
 
-Python-tesseract is a wrapper for `Google's Tesseract-OCR Engine`_. It is also useful as a
+Python-tesseract is a wrapper for `Google's Tesseract-OCR Engine <https://github.com/tesseract-ocr/tesseract>`_. It is also useful as a
 stand-alone invocation script to tesseract, as it can read all image types
 supported by the Python Imaging Library, including jpeg, png, gif, bmp, tiff,
 and others, whereas tesseract-ocr by default only supports tiff and bmp.
 Additionally, if used as a script, Python-tesseract will print the recognized
 text instead of writing it to a file.
+<<<<<<< HEAD
 .. _Google's Tesseract-OCR Engine: https://github.com/tesseract-ocr/tesseract
+=======
+>>>>>>> f2d00baec1d9c45f39ef1880f73ce438c2124088
 
 USAGE
 -----
 
+<<<<<<< HEAD
 ### Quickstart
+=======
+**Quickstart**
+>>>>>>> f2d00baec1d9c45f39ef1880f73ce438c2124088
 
 .. code-block:: python
 
@@ -29,7 +36,10 @@ USAGE
     # Include the above line, if you don't have tesseract executable in your PATH
     # Example tesseract_cmd: 'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract'
 
+    # Simple image to string
     print(pytesseract.image_to_string(Image.open('test.png')))
+    
+    # French text image to string
     print(pytesseract.image_to_string(Image.open('test-european.jpg'), lang='fra'))
     
     # Get bounding box estimates
@@ -37,6 +47,7 @@ USAGE
     
     # Get verbose data including boxes, confidences, line and page numbers
     print(pytesseract.image_to_data(Image.open('test.png')))
+<<<<<<< HEAD
 
  
 ### Functions
@@ -67,6 +78,9 @@ Any additional configurations, ex: ```config="-psm 6"```
 Modifies the processor priority for the Tesseract run. Not supported on Windows. Nice adjusts the niceness of unix-like processes.
 
  
+=======
+    
+>>>>>>> f2d00baec1d9c45f39ef1880f73ce438c2124088
 Support for OpenCV image/NumPy array objects
 
 .. code-block:: python
@@ -90,6 +104,30 @@ Add the following config, if you have tessdata error like: "Error opening data f
     
 
 
+
+**Functions**
+
+* **image_to_string** Returns the result of a Tesseract OCR run on the image to string
+
+* **image_to_boxes** Returns string output containing recognized characters and their box boundaries
+
+* **image_to_data** Returns string output containing box boundaries, confidences, and other information. Requires Tesseract 3.05+. See `Tesseract TSV documentation <https://github.com/tesseract-ocr/tesseract/wiki/Command-Line-Usage#tsv-output-currently-available-in-305-dev-in-master-branch-on-github>`_ for more information: 
+
+**Parameters**
+
+``image_to_data(image, lang=None, config='', nice=0, dict_output=False)``
+
+* **image** PIL image file for the image to be processed by Tesseract
+
+* **lang** Tesseract language code string
+
+* **config** Any additional configurations as a string, ex: ``config="-psm 6"``
+
+* **nice** Boolean, modifies the processor priority for the Tesseract run. Not supported on Windows. Nice adjusts the niceness of unix-like processes.
+
+* **dict_output** Boolean, if ``True`` will return dictionary containing headers pointing to list columns of data. Used for ``image_to_boxes`` and ``image_to_data`` only
+
+
 INSTALLATION
 ------------
 
@@ -107,7 +145,7 @@ Prerequisites:
   For Mac OS users. please install homebrew package **tesseract**.
 
 | Installing via pip:
-| See the `pytesseract package page <https://pypi.python.org/pypi/pytesseract>`_.
+See the `pytesseract package page <https://pypi.python.org/pypi/pytesseract>`_ for more information.
 
 .. code-block:: bash
 

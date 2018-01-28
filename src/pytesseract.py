@@ -49,6 +49,19 @@ def cleanup(temp_name):
             pass
 
 
+<<<<<<< HEAD
+=======
+def prepare(image):
+    if isinstance(image, Image.Image):
+        return image
+
+    if numpy_installed and isinstance(image, ndarray):
+        return Image.fromarray(image)
+
+    raise TypeError('Unsupported image object')
+
+
+>>>>>>> f2d00baec1d9c45f39ef1880f73ce438c2124088
 def save_image(image, boxes=False):
     image = prepare(image)
     if len(image.getbands()) == 4:
@@ -60,6 +73,10 @@ def save_image(image, boxes=False):
     image.save(input_file_name)
     return temp_name
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> f2d00baec1d9c45f39ef1880f73ce438c2124088
 def run_tesseract(input_filename,
                   output_filename_base,
                   extension,
@@ -87,17 +104,33 @@ def run_tesseract(input_filename,
 
     if status_code:
         raise TesseractError(status, get_errors(error_string))
+<<<<<<< HEAD
+
+    return True
+=======
+>>>>>>> f2d00baec1d9c45f39ef1880f73ce438c2124088
 
     return True
 
-def prepare(image):
-    if isinstance(image, Image.Image):
-        return image
 
-    if numpy_installed and isinstance(image, ndarray):
-        return Image.fromarray(image)
+def run_and_get_output(image, extension, lang=None, config='', nice=None):
+    temp_name = ''
+    try:
+        temp_name = save_image(image)
+        arguments = {
+            'input_filename': temp_name+'.bmp',
+            'output_filename_base': temp_name+'_out',
+            'extension': extension,
+            'lang': lang,
+            'config': config,
+            'nice': nice
+        }
 
-    raise TypeError('Unsupported image object')
+        run_tesseract(**arguments)
+        with open(output_filename_base+'.'+extension, 'rb') as output_file:
+            return output_file.read().decode('utf-8').strip()
+    finally:
+        cleanup(temp_name)
 
 def run_and_get_output(image, extension, lang=None, config='', nice=None):
     temp_name = ''
@@ -111,6 +144,7 @@ def run_and_get_output(image, extension, lang=None, config='', nice=None):
     finally:
         cleanup(temp_name)
 
+<<<<<<< HEAD
 def image_to_string(image, lang=None, config='', nice=0, boxes=False):
     '''
     Runs tesseract on the specified image. First, the image is written to disk,
@@ -141,6 +175,63 @@ def image_to_boxes(image, lang=None, config='', nice=0):
     '''
     config += 'batch.nochop makebox'
     return run_and_get_output(image, 'box', lang, config, nice)
+=======
+def file_to_dict(tsv, cell_delimiter, str_col_idx):
+    result = {}
+    rows = [row.split(cell_delimiter) for row in tsv.split('\n')]
+    if not rows:
+        return result
+
+    header = rows.pop(0)
+    if str_col_idx < 0:
+        str_col_idx += len(header)
+
+    for i, head in enumerate(header):
+        result[head] = [
+            int(row[i]) if i != str_col_idx else row[i] for row in rows
+        ]
+
+    return result
+
+
+def image_to_string(image, lang=None, config='', nice=0, boxes=False):
+    '''
+    Returns the result of a Tesseract OCR run on the provided image to string
+    '''
+    if boxes:
+        # Added for backwards compatibility
+        print('\nWarning: Argument \'boxes\' is deprecated and will be removed'
+              ' in future versions. Use function image_to_boxes instead.\n')
+        return image_to_boxes(image, lang, config, nice)
+    return run_and_get_output(image, 'txt', lang, config, nice)
+
+
+def image_to_boxes(image, lang=None, config='', nice=0, dict_output=False):
+    '''
+    Returns string containing recognized characters and their box boundaries
+    '''
+    config += 'batch.nochop makebox'
+    result = run_and_get_output(image, 'box', lang, config, nice)
+
+    if not dict_output:
+        return result
+
+    box_header = 'char left bottom right top page\n'
+    return file_to_dict(box_header + result, ' ', 0)
+
+
+def image_to_data(image, lang=None, config='', nice=0, dict_output=False):
+    '''
+    Returns string containing box boundaries, confidences,
+    and other information. Requires Tesseract 3.05+
+    '''
+
+    result = run_and_get_output(image, 'tsv', lang, config, nice)
+    if not dict_output:
+        return result
+
+    return file_to_dict(result, '\t', -1)
+>>>>>>> f2d00baec1d9c45f39ef1880f73ce438c2124088
 
 def image_to_data(image, lang=None, config='', nice=0):
     '''
